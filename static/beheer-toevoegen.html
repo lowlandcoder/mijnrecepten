@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#061225">
+  <meta name="robots" content="noindex">
+  <title>MijnRecepten — Recept toevoegen</title>
+  <link rel="stylesheet" href="huisstijl.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="beheer.css">
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <h1 class="merk">Mijn<em>Recepten</em> · <span id="paginaTitel">toevoegen</span></h1>
+        <div class="merk-sub" id="status">Snel via een foto, of als volledig recept.</div>
+      </div>
+      <a class="beheer-knop" href="/beheer">&larr; Terug naar beheer</a>
+    </header>
+
+    <!-- Snel toevoegen: foto van een recept, met tekstherkenning. Alleen bij nieuw recept. -->
+    <section class="kaart blok" id="snelBlok">
+      <h2 class="blok-titel">Snel toevoegen (Uitproberen)</h2>
+      <p class="hint">Maak of kies een foto of printscreen van een recept. De tekst wordt automatisch herkend.</p>
+      <form id="snelForm">
+        <input type="text" name="titel" placeholder="Titel (bijv. Thaise curry uit tijdschrift)" required>
+        <input type="file" name="foto" accept="image/*" capture="environment" id="snelFoto" required>
+        <input type="text" name="labels" placeholder="Labels/ingrediënten, komma-gescheiden (optioneel)">
+        <div class="ocr-voorbeeld" id="ocrVoorbeeld" hidden>
+          <h3>Herkende tekst (wordt meegenomen)</h3>
+          <div class="tekst" id="ocrTekst"></div>
+        </div>
+        <button type="submit">Toevoegen aan Uitproberen</button>
+      </form>
+    </section>
+
+    <!-- Volledig recept (ook gebruikt voor wijzigen) -->
+    <section class="kaart blok">
+      <h2 class="blok-titel" id="volledigTitel">Volledig recept</h2>
+      <form id="receptForm">
+        <input type="hidden" name="id" id="receptId">
+        <input type="text" name="titel" id="vTitel" placeholder="Titel" required>
+        <label class="veldlabel">Categorie</label>
+        <select name="categorie" id="vCategorie">
+          <option value="favoriet">Favoriete recepten</option>
+          <option value="uitproberen">Uitproberen</option>
+        </select>
+        <label class="veldlabel">Foto van het gerecht</label>
+        <input type="file" name="foto" accept="image/*" id="vFoto">
+        <div id="huidigeFoto" class="huidige-foto" hidden>
+          <span class="hint">Huidige foto:</span><br>
+          <img id="huidigeFotoImg" src="" alt="">
+        </div>
+        <textarea name="ingredienten" id="vIngredienten" rows="5" placeholder="Ingrediënten (één per regel)"></textarea>
+        <textarea name="bereiding" id="vBereiding" rows="8" placeholder="Bereiding"></textarea>
+        <input type="text" name="labels" id="vLabels" placeholder="Labels/ingrediënten, komma-gescheiden">
+        <input type="text" name="bron" id="vBron" placeholder="Bron (URL, optioneel)">
+        <div class="knoppen">
+          <button type="submit" id="opslaanKnop">Opslaan</button>
+          <a class="knop-link grijs" href="/beheer">Annuleren</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="beheer-toevoegen.js"></script>
+</body>
+</html>

@@ -187,6 +187,12 @@ def beheer():
     return send_from_directory("static", "beheer.html")
 
 
+@app.route("/beheer/toevoegen")
+def beheer_toevoegen_pagina():
+    # Aparte pagina voor toevoegen en wijzigen (ook afgeschermd via /beheer).
+    return send_from_directory("static", "beheer-toevoegen.html")
+
+
 @app.route("/foto/<naam>")
 def foto(naam):
     if "/" in naam or "\\" in naam or ".." in naam:

@@ -35,7 +35,26 @@ button {
 button.grijs { color: var(--tekst); background: transparent; border: 1px solid var(--rand); }
 button.rood { color: #ff9c9c; background: transparent; border: 1px solid rgba(255,120,120,.4); }
 button.klein { padding: 6px 12px; font-size: 13px; }
-.knoppen { display: flex; gap: 10px; }
+.knoppen { display: flex; gap: 10px; align-items: center; }
+
+/* Knop die eigenlijk een link is (<a>), zelfde uiterlijk als een knop. */
+.kop-knoppen { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.knop-link {
+  display: inline-block;
+  cursor: pointer;
+  color: #041225;
+  background: var(--accent);
+  border: none;
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 14px;
+}
+.knop-link.grijs { color: var(--tekst); background: transparent; border: 1px solid var(--rand); }
+
+.huidige-foto { margin: 4px 0 12px; }
+.huidige-foto img { max-width: 160px; border-radius: 10px; margin-top: 4px; display: block; }
 
 .ocr-voorbeeld { margin: 8px 0 12px; }
 .ocr-voorbeeld h3 { font-size: 13px; color: var(--accent); margin-bottom: 6px; }
