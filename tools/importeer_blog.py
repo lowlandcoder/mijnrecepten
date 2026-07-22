@@ -45,9 +45,24 @@ def strip_html(tekst):
     return html.unescape(tekst).strip()
 
 
+def schoon_titel(titel):
+    """Haalt het voorvoegsel 'Recept' weg en verwijdert zachte afbreekstreepjes."""
+    titel = (titel or "").replace("­", "")           # zacht afbreekstreepje
+    titel = re.sub(r"^\s*recept\s*[:\-–]\s*", "", titel, flags=re.I)
+    return re.sub(r"\s+", " ", titel).strip()
+
+
 def eerste_afbeelding(html_tekst):
     m = re.search(r'<img[^>]+src=["\']([^"\']+)["\']', html_tekst, re.I)
-    return m.group(1) if m else None
+    return vergroot_foto(m.group(1)) if m else None
+
+
+def vergroot_foto(url):
+    """Zet een kleine blogspot-miniatuur om naar een groter formaat."""
+    url = re.sub(r"/s\d+(-c)?/", "/s1600/", url)   # .../s320/naam.jpg -> .../s1600/
+    url = re.sub(r"=s\d+(-c)?(?=$|[&?])", "=s1600", url)  # ...=s320 -> ...=s1600
+    url = re.sub(r"/w\d+-h\d+(-[a-z-]+)?/", "/s1600/", url)  # .../w320-h240/ -> .../s1600/
+    return url
 
 
 def download(url):
@@ -107,7 +122,7 @@ def main():
 
     aantal = 0
     for entry in berichten:
-        titel = (entry.findtext(f"{ATOM}title") or "").strip()
+        titel = schoon_titel(entry.findtext(f"{ATOM}title"))
         inhoud_html = entry.findtext(f"{ATOM}content") or entry.findtext(f"{ATOM}summary") or ""
         link = ""
         for l in entry.findall(f"{ATOM}link"):
