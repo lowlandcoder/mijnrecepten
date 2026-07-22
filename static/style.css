@@ -121,6 +121,8 @@
   padding: 24px;
   z-index: 50;
 }
+/* Verborgen laten winnen van display:flex, anders staat het venster altijd aan. */
+.venster[hidden] { display: none; }
 .venster-kaart {
   position: relative;
   width: min(680px, 100%);
