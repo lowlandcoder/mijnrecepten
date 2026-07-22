@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#061225">
+  <meta name="description" content="Favoriete recepten en recepten om uit te proberen, met filter op ingrediënten.">
+  <title>MijnRecepten — Lab023</title>
+  <link rel="stylesheet" href="huisstijl.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <h1 class="merk">Mijn<em>Recepten</em></h1>
+        <div class="merk-sub" id="teller">Recepten laden…</div>
+      </div>
+      <a class="beheer-knop" href="/beheer">Beheer</a>
+    </header>
+
+    <div class="tabs" id="tabs">
+      <button class="tab actief" data-categorie="">Alles</button>
+      <button class="tab" data-categorie="favoriet">Favoriete recepten</button>
+      <button class="tab" data-categorie="uitproberen">Uitproberen</button>
+    </div>
+
+    <div class="zoekbalk">
+      <svg class="zoek-icoon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input id="zoekveld" type="text" placeholder="Zoek in titel, ingrediënten…" autocomplete="off" aria-label="Zoek een recept">
+    </div>
+
+    <div class="labels" id="labels" aria-label="Filter op ingrediënt"></div>
+
+    <div id="rooster" class="rooster"></div>
+    <p id="geenResultaat" class="geen-resultaat" hidden>Geen recept gevonden.</p>
+  </main>
+
+  <!-- Detailvenster -->
+  <div id="venster" class="venster" hidden>
+    <div class="venster-kaart kaart">
+      <button class="sluit" id="sluit" aria-label="Sluiten">&times;</button>
+      <div id="venster-inhoud"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+# Database en foto's blijven buiten de repository.
+data/
+!data/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+.env

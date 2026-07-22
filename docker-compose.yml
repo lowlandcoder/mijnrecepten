@@ -1,0 +1,17 @@
+# Compose-bestand voor de MijnRecepten-backend.
+# Deze container draait op de lab023-server, naast nginx. De database en de
+# foto's blijven bewaard in het gekoppelde volume ./data.
+
+services:
+  mijnrecepten:
+    build: .
+    container_name: mijnrecepten
+    restart: unless-stopped
+    environment:
+      OCR_TAAL: "nld"        # taal voor de tekstherkenning (Tesseract)
+      POORT: "8000"
+    ports:
+      # Alleen op localhost; nginx schakelt door naar deze poort.
+      - "127.0.0.1:8300:8000"
+    volumes:
+      - ./data:/app/data

@@ -1,0 +1,65 @@
+/* Extra opmaak voor de beheerpagina. */
+
+.blok { margin-bottom: 20px; }
+.blok-titel { font-size: 16px; margin-bottom: 6px; }
+.hint { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+.veldlabel { display: block; color: var(--muted); font-size: 13px; margin: 10px 0 4px; }
+
+form input[type="text"],
+form input[type="file"],
+form select,
+form textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  color: var(--tekst);
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--rand);
+  border-radius: 12px;
+  font: inherit;
+  outline: none;
+}
+form input:focus, form select:focus, form textarea:focus { border-color: var(--accent); }
+form textarea { resize: vertical; }
+
+button {
+  cursor: pointer;
+  color: #041225;
+  background: var(--accent);
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font: inherit;
+  font-weight: 600;
+}
+button.grijs { color: var(--tekst); background: transparent; border: 1px solid var(--rand); }
+button.rood { color: #ff9c9c; background: transparent; border: 1px solid rgba(255,120,120,.4); }
+button.klein { padding: 6px 12px; font-size: 13px; }
+.knoppen { display: flex; gap: 10px; }
+
+.ocr-voorbeeld { margin: 8px 0 12px; }
+.ocr-voorbeeld h3 { font-size: 13px; color: var(--accent); margin-bottom: 6px; }
+.ocr-voorbeeld .tekst { white-space: pre-wrap; font-size: 13px; color: var(--muted); max-height: 160px; overflow-y: auto; }
+
+.beheer-lijst { display: flex; flex-direction: column; gap: 10px; }
+.beheer-rij {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--rand);
+  border-radius: 14px;
+  background: var(--kaart);
+}
+.beheer-rij img, .beheer-rij .geen-foto {
+  width: 56px; height: 56px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,.05);
+}
+.beheer-rij .geen-foto { display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 10px; text-align: center; }
+.beheer-rij .info { flex: 1; min-width: 0; }
+.beheer-rij .info .t { font-weight: 600; }
+.beheer-rij .info .m { font-size: 12px; color: var(--muted); }
+.beheer-rij .acties { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }

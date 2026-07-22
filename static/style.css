@@ -1,0 +1,145 @@
+/* Pagina-eigen opmaak voor MijnRecepten: kop, tabs, filter en receptrooster. */
+
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.beheer-knop {
+  flex-shrink: 0;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+  padding: 6px 12px;
+  border: 1px solid var(--rand);
+  border-radius: 999px;
+}
+.beheer-knop:hover { color: var(--tekst); border-color: var(--accent); }
+
+/* Categorie-tabs */
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.tab {
+  cursor: pointer;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--rand);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 14px;
+}
+.tab.actief { color: var(--tekst); border-color: var(--accent); background: rgba(77, 171, 247, .12); }
+
+/* Zoekbalk */
+.zoekbalk {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--rand);
+  border-radius: 999px;
+  background: var(--kaart);
+  margin-bottom: 14px;
+}
+.zoek-icoon { stroke: var(--muted); fill: none; stroke-width: 2; }
+#zoekveld {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--tekst);
+  font-size: 15px;
+}
+
+/* Labelfilter (ingrediënten) */
+.labels { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.label-chip {
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--muted);
+  border: 1px solid var(--rand);
+  border-radius: 999px;
+  padding: 5px 11px;
+  background: transparent;
+}
+.label-chip .aantal { opacity: .6; margin-left: 4px; }
+.label-chip.actief { color: var(--tekst); border-color: var(--accent); background: rgba(77, 171, 247, .14); }
+
+/* Receptrooster */
+.rooster {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.recept-kaart {
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.recept-foto {
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  object-fit: cover;
+  background: rgba(255,255,255,.04);
+  display: block;
+}
+.recept-foto.leeg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+.recept-body { padding: 14px 16px 16px; }
+.recept-titel { font-weight: 600; margin-bottom: 6px; }
+.recept-labels { display: flex; flex-wrap: wrap; gap: 5px; }
+.mini-label { font-size: 11px; color: var(--muted); border: 1px solid var(--rand); border-radius: 999px; padding: 2px 8px; }
+
+.badge-cat {
+  display: inline-block;
+  font-size: 11px;
+  border-radius: 999px;
+  padding: 2px 9px;
+  margin-bottom: 8px;
+}
+.badge-favoriet { color: var(--geld); border: 1px solid rgba(105,219,124,.4); }
+.badge-uitproberen { color: var(--gas); border: 1px solid rgba(244,162,97,.4); }
+
+.geen-resultaat { color: var(--muted); text-align: center; padding: 24px; }
+
+/* Detailvenster */
+.venster {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 10, 22, .72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 50;
+}
+.venster-kaart {
+  position: relative;
+  width: min(680px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
+}
+.sluit {
+  position: absolute;
+  top: 12px; right: 14px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 26px;
+  cursor: pointer;
+  line-height: 1;
+}
+.sluit:hover { color: var(--tekst); }
+.venster-foto { width: 100%; border-radius: var(--radius); margin: 6px 0 16px; }
+.venster h2 { font-size: 20px; margin-bottom: 10px; }
+.venster h3 { font-size: 14px; color: var(--accent); margin: 16px 0 6px; }
+.venster p, .venster .tekst { white-space: pre-wrap; color: var(--tekst); }
+.venster .bron { font-size: 13px; color: var(--muted); margin-top: 14px; word-break: break-all; }
