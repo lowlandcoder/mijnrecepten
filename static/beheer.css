@@ -22,6 +22,9 @@ form textarea {
 form input:focus, form select:focus, form textarea:focus { border-color: var(--accent); }
 form textarea { resize: vertical; }
 
+/* Opties in de keuzelijst leesbaar maken (anders wit op wit). */
+form select option { color: var(--tekst); background: #0f2443; }
+
 button {
   cursor: pointer;
   color: #041225;
