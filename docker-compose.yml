@@ -14,4 +14,4 @@ services:
       # Alleen op localhost; nginx schakelt door naar deze poort.
       - "127.0.0.1:8300:8000"
     volumes:
-      - ./data:/app/data
+      - /srv/ssddata/mijnrecepten:/app/data
