@@ -20,6 +20,19 @@
       <a class="beheer-knop" href="/beheer">&larr; Terug naar beheer</a>
     </header>
 
+    <!-- Toevoegen via een webadres: pagina ophalen en de velden hieronder vullen. -->
+    <section class="kaart blok" id="urlBlok">
+      <h2 class="blok-titel">Toevoegen via een webadres</h2>
+      <p class="hint">Plak het adres van een receptpagina. Titel, ingrediënten, bereiding en foto worden opgehaald en hieronder ingevuld. Controleer ze en sla daarna op.</p>
+      <form id="urlForm">
+        <div class="url-rij">
+          <input type="url" name="url" id="urlVeld" placeholder="https://..." required>
+          <button type="submit" id="urlKnop">Ophalen</button>
+        </div>
+        <div class="melding" id="urlMelding" hidden></div>
+      </form>
+    </section>
+
     <!-- Snel toevoegen: foto van een recept, met tekstherkenning. Alleen bij nieuw recept. -->
     <section class="kaart blok" id="snelBlok">
       <h2 class="blok-titel">Snel toevoegen (Uitproberen)</h2>
@@ -49,8 +62,9 @@
         </select>
         <label class="veldlabel">Foto van het gerecht</label>
         <input type="file" name="foto" accept="image/*" id="vFoto">
+        <input type="hidden" name="foto_naam" id="vFotoNaam">
         <div id="huidigeFoto" class="huidige-foto" hidden>
-          <span class="hint">Huidige foto:</span><br>
+          <span class="hint" id="huidigeFotoLabel">Huidige foto:</span><br>
           <img id="huidigeFotoImg" src="" alt="">
         </div>
         <label class="veldlabel">Ingrediënten</label>

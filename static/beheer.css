@@ -6,6 +6,7 @@
 .veldlabel { display: block; color: var(--muted); font-size: 13px; margin: 10px 0 4px; }
 
 form input[type="text"],
+form input[type="url"],
 form input[type="file"],
 form select,
 form textarea {
@@ -55,6 +56,14 @@ button.klein { padding: 6px 12px; font-size: 13px; }
   font-size: 14px;
 }
 .knop-link.grijs { color: var(--tekst); background: transparent; border: 1px solid var(--rand); }
+
+/* Blok "Toevoegen via een webadres". */
+.url-rij { display: flex; gap: 10px; align-items: flex-start; }
+.url-rij input[type="url"] { flex: 1; margin-bottom: 0; }
+.url-rij button { flex-shrink: 0; }
+.melding { font-size: 13px; margin-top: 8px; }
+.melding.fout { color: #ff9c9c; }
+.melding.goed { color: var(--accent); }
 
 .huidige-foto { margin: 4px 0 12px; }
 .huidige-foto img { max-width: 160px; border-radius: 10px; margin-top: 4px; display: block; }

@@ -1,7 +1,9 @@
 // Toevoegen en wijzigen van een recept op een aparte pagina.
-// Nieuw: snel toevoegen met foto/OCR of een volledig recept.
+// Nieuw: toevoegen via een webadres, snel toevoegen met foto/OCR, of een
+// volledig recept met de hand.
 // Wijzigen: via /beheer/toevoegen?id=<id>; dan wordt het recept ingevuld en
-// het snel-toevoegen-blok verborgen. Na opslaan terug naar /beheer.
+// worden het webadres-blok en het snel-toevoegen-blok verborgen. Na opslaan
+// terug naar /beheer.
 
 const $ = (id) => document.getElementById(id);
 const bewerkId = new URLSearchParams(location.search).get("id");
@@ -14,6 +16,62 @@ async function haal(pad, opties) {
 
 function terugNaarBeheer(melding) {
   window.location.href = "/beheer?melding=" + encodeURIComponent(melding);
+}
+
+/* --- Toevoegen via een webadres (alleen bij een nieuw recept) ----------- */
+function toonUrlMelding(tekst, soort) {
+  const vak = $("urlMelding");
+  vak.textContent = tekst;
+  vak.className = "melding " + (soort || "");
+  vak.hidden = !tekst;
+}
+
+function koppelUrl() {
+  $("urlForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const adres = $("urlVeld").value.trim();
+    if (!adres) return;
+
+    $("urlKnop").disabled = true;
+    $("urlKnop").textContent = "Bezig…";
+    toonUrlMelding("Het recept wordt opgehaald. Dit duurt meestal een paar tellen.", "");
+
+    const fd = new FormData();
+    fd.append("url", adres);
+    try {
+      const r = await fetch("/api/beheer/importeer-url", { method: "POST", body: fd });
+      const res = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(res.fout || "Ophalen mislukt.");
+
+      $("vTitel").value = res.titel || "";
+      $("vCategorie").value = res.categorie || "uitproberen";
+      $("vIngredienten").value = res.ingredienten || "";
+      $("vBereiding").value = res.bereiding || "";
+      $("vLabels").value = (res.labels || []).join(", ");
+      $("vBron").value = res.bron || adres;
+      $("vFotoNaam").value = res.foto || "";
+      if (res.foto_url) {
+        $("huidigeFotoLabel").textContent = "Opgehaalde foto:";
+        $("huidigeFotoImg").src = res.foto_url;
+        $("huidigeFoto").hidden = false;
+      } else {
+        $("huidigeFoto").hidden = true;
+      }
+
+      toonUrlMelding(
+        res.foto
+          ? "Opgehaald. Loop de velden hieronder na en sla daarna op."
+          : "Opgehaald, maar zonder foto. Loop de velden hieronder na en sla daarna op.",
+        "goed"
+      );
+      $("vTitel").scrollIntoView({ behavior: "smooth", block: "center" });
+    } catch (fout) {
+      toonUrlMelding(fout.message, "fout");
+    } finally {
+      $("urlKnop").disabled = false;
+      $("urlKnop").textContent = "Ophalen";
+    }
+  });
 }
 
 /* --- Snel toevoegen met OCR (alleen bij een nieuw recept) --------------- */
@@ -73,6 +131,7 @@ async function laadTeWijzigen() {
   $("volledigTitel").textContent = "Recept wijzigen";
   document.title = "MijnRecepten — Recept wijzigen";
   $("snelBlok").hidden = true;              // snel toevoegen niet tonen bij wijzigen
+  $("urlBlok").hidden = true;               // ophalen via een webadres ook niet
   $("receptId").value = r.id;
   $("vTitel").value = r.titel || "";
   $("vCategorie").value = r.categorie || "uitproberen";
@@ -92,5 +151,6 @@ if (bewerkId) {
     $("status").textContent = "Laden mislukt: " + fout.message;
   });
 } else {
+  koppelUrl();
   koppelSnel();
 }

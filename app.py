@@ -13,6 +13,11 @@ Bij "Uitproberen" kan een foto of printscreen worden toegevoegd. De tekst op
 die foto wordt met Tesseract (Nederlands) herkend en opgeslagen, zodat het
 recept doorzoekbaar en filterbaar wordt.
 
+Een recept kan ook via een webadres binnenkomen. De route
+/api/beheer/importeer-url haalt de pagina op met de module schraper.py en
+geeft de gevonden velden terug. Die worden op de beheerpagina getoond ter
+controle en pas na akkoord opgeslagen.
+
 Instellingen komen uit omgevingsvariabelen (in te vullen in docker-compose):
   DATA_DIR   map voor database en foto's        (standaard /app/data)
   POORT      poort waarop de pagina draait       (standaard 8000)
@@ -35,6 +40,13 @@ try:
     OCR_BESCHIKBAAR = True
 except Exception:  # pytesseract of Pillow niet aanwezig
     OCR_BESCHIKBAAR = False
+
+try:
+    import schraper
+    IMPORT_BESCHIKBAAR = True
+except Exception:  # schraper of requests niet aanwezig
+    schraper = None
+    IMPORT_BESCHIKBAAR = False
 
 DATA_DIR = os.environ.get("DATA_DIR", "/app/data")
 FOTO_DIR = os.path.join(DATA_DIR, "fotos")
@@ -156,6 +168,21 @@ def bewaar_foto(bestand):
     }[bestand.mimetype]
     naam = f"{uuid.uuid4().hex}{ext}"
     bestand.save(os.path.join(FOTO_DIR, naam))
+    return naam
+
+
+def bestaande_foto(naam):
+    """Controleert een fotonaam die al eerder is opgeslagen.
+
+    Wordt gebruikt bij het ophalen via een webadres en bij de tekstherkenning:
+    de foto staat dan al in de fotomap en hoeft niet nog eens te worden
+    verstuurd. Geeft None als de naam niet deugt of het bestand ontbreekt.
+    """
+    naam = (naam or "").strip()
+    if not naam or not re.fullmatch(r"[A-Za-z0-9]+\.(jpg|png|webp|gif)", naam):
+        return None
+    if not os.path.isfile(os.path.join(FOTO_DIR, naam)):
+        return None
     return naam
 
 
@@ -282,6 +309,7 @@ def _velden_uit_verzoek():
         "bereiding": request.form.get("bereiding", "").strip(),
         "bron": request.form.get("bron", "").strip(),
         "labels": [x for x in labels.split(",") if x.strip()],
+        "foto_naam": request.form.get("foto_naam", "").strip(),
     }
 
 
@@ -293,8 +321,17 @@ def beheer_maak():
     if v["categorie"] not in CATEGORIEEN:
         v["categorie"] = "uitproberen"
 
-    foto_naam = bewaar_foto(request.files.get("foto"))
-    ocr_tekst = ocr_van_foto(foto_naam) if v["categorie"] == "uitproberen" else ""
+    # De foto komt als bestand mee, of staat al in de fotomap (tekstherkenning
+    # vooraf, of een foto die bij een webadres is opgehaald).
+    foto_naam = bewaar_foto(request.files.get("foto")) or bestaande_foto(v["foto_naam"])
+    # Tekstherkenning alleen als er nog geen tekst is. Bij een recept van een
+    # webadres staan ingrediënten en bereiding er al in.
+    herken = (
+        v["categorie"] == "uitproberen"
+        and not v["ingredienten"]
+        and not v["bereiding"]
+    )
+    ocr_tekst = ocr_van_foto(foto_naam) if herken else ""
 
     tijd = nu()
     with db_lock:
@@ -328,6 +365,8 @@ def beheer_wijzig(recept_id):
         nieuwe = request.files.get("foto")
         if nieuwe and nieuwe.filename:
             foto_naam = bewaar_foto(nieuwe)
+        elif bestaande_foto(v["foto_naam"]):
+            foto_naam = bestaande_foto(v["foto_naam"])
         categorie = v["categorie"] if v["categorie"] in CATEGORIEEN else rij["categorie"]
         conn.execute(
             """UPDATE recepten SET titel=?, categorie=?, foto=?, ingredienten=?,
@@ -394,16 +433,49 @@ def beheer_ocr():
     return jsonify({"tekst": tekst, "ocr": True, "foto": naam})
 
 
+@app.route("/api/beheer/importeer-url", methods=["POST"])
+def beheer_importeer_url():
+    """Haalt een recept op van een webadres en geeft de velden terug.
+
+    Er wordt niets opgeslagen behalve de foto van het gerecht. De beheerpagina
+    toont de velden ter controle; opslaan gebeurt daarna met de gewone route
+    /api/beheer/recept.
+    """
+    if not IMPORT_BESCHIKBAAR:
+        return jsonify({"fout": "Ophalen via een webadres is niet beschikbaar."}), 503
+
+    url = (request.form.get("url") or "").strip()
+    if not url and request.is_json:
+        url = (request.get_json(silent=True) or {}).get("url", "").strip()
+
+    try:
+        gegevens = schraper.schraap(url, foto_dir=FOTO_DIR)
+    except schraper.SchraapFout as fout:
+        return jsonify({"fout": str(fout)}), 400
+    except Exception as fout:  # onverwacht, wel leesbaar melden
+        print("Ophalen mislukt:", fout, flush=True)
+        return jsonify({"fout": "Het ophalen is onverwacht misgegaan."}), 500
+
+    gegevens["categorie"] = "uitproberen"
+    gegevens["foto_url"] = f"/foto/{gegevens['foto']}" if gegevens.get("foto") else None
+    return jsonify(gegevens)
+
+
 @app.route("/api/beheer/status")
 def beheer_status():
-    return jsonify({"ocr_beschikbaar": OCR_BESCHIKBAAR, "ocr_taal": OCR_TAAL})
+    return jsonify({
+        "ocr_beschikbaar": OCR_BESCHIKBAAR,
+        "ocr_taal": OCR_TAAL,
+        "import_beschikbaar": IMPORT_BESCHIKBAAR,
+    })
 
 
 def main():
     init_db()
     print(
         f"MijnRecepten gestart op poort {POORT}. "
-        f"OCR beschikbaar: {OCR_BESCHIKBAAR} (taal: {OCR_TAAL}).",
+        f"OCR beschikbaar: {OCR_BESCHIKBAAR} (taal: {OCR_TAAL}). "
+        f"Ophalen via webadres beschikbaar: {IMPORT_BESCHIKBAAR}.",
         flush=True,
     )
     serve(app, host="0.0.0.0", port=POORT)

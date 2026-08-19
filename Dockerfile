@@ -15,6 +15,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app.py .
+COPY schraper.py .
 COPY static/ ./static/
 
 # Map voor database en foto's (wordt als volume gekoppeld).
