@@ -6,6 +6,7 @@ const $ = (id) => document.getElementById(id);
 const CAT_TEKST = { favoriet: "Favoriet", uitproberen: "Uitproberen" };
 let huidigeCategorie = "";
 let huidigeZoek = "";
+const gekozenLabels = new Set();
 
 async function haal(pad, opties) {
   const r = await fetch(pad, opties);
@@ -24,6 +25,7 @@ async function verwijder(id) {
   if (!confirm("Dit recept verwijderen?")) return;
   await haal(`/api/beheer/recept/${id}/verwijder`, { method: "POST" });
   $("status").textContent = "Verwijderd.";
+  laadLabels();
   laadLijst();
 }
 
@@ -54,9 +56,18 @@ function maakRij(r) {
   info.className = "info";
   info.innerHTML = `<div class="t"></div><div class="m"></div>`;
   info.querySelector(".t").textContent = r.titel;
-  info.querySelector(".m").textContent =
-    (CAT_TEKST[r.categorie] || r.categorie) +
-    (r.labels && r.labels.length ? " · " + r.labels.join(", ") : "");
+  info.querySelector(".m").textContent = CAT_TEKST[r.categorie] || r.categorie;
+  if (r.labels && r.labels.length) {
+    const labelrij = document.createElement("div");
+    labelrij.className = "recept-labels";
+    r.labels.forEach((naam) => {
+      const l = document.createElement("span");
+      l.className = "mini-label";
+      l.textContent = naam;
+      labelrij.appendChild(l);
+    });
+    info.appendChild(labelrij);
+  }
   rij.appendChild(info);
 
   const acties = document.createElement("div");
@@ -74,10 +85,35 @@ function maakRij(r) {
   return rij;
 }
 
+/* Labelfilter: alle labels met het aantal recepten, net als op de site. */
+async function laadLabels() {
+  const labels = await haal("/api/labels");
+  const houder = $("labels");
+  houder.innerHTML = "";
+  labels.forEach((l) => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "label-chip" + (gekozenLabels.has(l.naam) ? " actief" : "");
+    chip.textContent = l.naam;
+    const aantal = document.createElement("span");
+    aantal.className = "aantal";
+    aantal.textContent = l.aantal;
+    chip.appendChild(aantal);
+    chip.addEventListener("click", () => {
+      if (gekozenLabels.has(l.naam)) gekozenLabels.delete(l.naam);
+      else gekozenLabels.add(l.naam);
+      chip.classList.toggle("actief");
+      laadLijst();
+    });
+    houder.appendChild(chip);
+  });
+}
+
 async function laadLijst() {
   const p = new URLSearchParams();
   if (huidigeCategorie) p.set("categorie", huidigeCategorie);
   if (huidigeZoek) p.set("zoek", huidigeZoek);
+  if (gekozenLabels.size) p.set("labels", [...gekozenLabels].join(","));
   const recepten = await haal("/api/recepten?" + p.toString());
   const lijst = $("beheerLijst");
   lijst.innerHTML = "";
@@ -113,4 +149,5 @@ $("zoekveld").addEventListener("input", (e) => {
 const melding = new URLSearchParams(location.search).get("melding");
 if (melding) $("status").textContent = melding;
 
+laadLabels();
 laadLijst();

@@ -77,6 +77,10 @@ de gewone route `POST /api/beheer/recept`.
   `/api/beheer/recept/<id>/naar-favoriet`.
 - Labels zijn ingrediënten. Filteren op meerdere labels toont alleen recepten
   die ze allemaal hebben.
+- De labels staan zowel op de publieke pagina als op de beheerpagina. In de
+  beheerlijst staan ze als blokjes onder de titel, en boven de lijst staat
+  dezelfde filterbalk met het aantal recepten per label. Filter, categorie en
+  zoekwoord werken samen.
 
 ## Afscherming
 

@@ -94,3 +94,7 @@ button.klein { padding: 6px 12px; font-size: 13px; }
 .beheer-rij .info .t { font-weight: 600; }
 .beheer-rij .info .m { font-size: 12px; color: var(--muted); }
 .beheer-rij .acties { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+/* Labels: blokjes in de lijst en filterknoppen erboven. */
+.beheer-rij .info .recept-labels { margin-top: 4px; }
+.label-chip { font-weight: 400; }
