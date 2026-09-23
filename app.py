@@ -55,7 +55,7 @@ POORT = int(os.environ.get("POORT", "8000"))
 OCR_TAAL = os.environ.get("OCR_TAAL", "nld")
 
 TOEGESTANE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
-CATEGORIEEN = {"favoriet", "uitproberen"}
+CATEGORIEEN = {"favoriet", "uitproberen", "afgeserveerd"}
 
 db_lock = threading.Lock()
 
@@ -246,7 +246,7 @@ def api_recepten():
     """Recepten ophalen, met filter op categorie, labels en zoekwoord.
 
     Parameters:
-      categorie  'favoriet' of 'uitproberen' (optioneel)
+      categorie  'favoriet', 'uitproberen' of 'afgeserveerd' (optioneel)
       labels     komma-gescheiden lijst; recept moet ze ALLE hebben
       zoek       zoekwoord in titel, ingrediënten, bereiding en ocr-tekst
     """

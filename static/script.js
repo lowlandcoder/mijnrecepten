@@ -4,12 +4,12 @@
 const $ = (id) => document.getElementById(id);
 
 const staat = {
-  categorie: "",       // "", "favoriet" of "uitproberen"
+  categorie: "favoriet", // "", "favoriet", "uitproberen" of "afgeserveerd"
   zoek: "",
   labels: new Set(),   // gekozen ingrediënt-labels
 };
 
-const CAT_TEKST = { favoriet: "Favoriet", uitproberen: "Uitproberen" };
+const CAT_TEKST = { favoriet: "Favoriet", uitproberen: "Uitproberen", afgeserveerd: "Afgeserveerd" };
 
 async function haal(pad) {
   const r = await fetch(pad);
@@ -130,14 +130,37 @@ function ontsnap(t) {
 }
 
 /* Tabs */
+function kiesTab(categorie) {
+  document.querySelectorAll(".tab").forEach((t) =>
+    t.classList.toggle("actief", t.dataset.categorie === categorie));
+  staat.categorie = categorie;
+}
+
 $("tabs").addEventListener("click", (e) => {
   const knop = e.target.closest(".tab");
   if (!knop) return;
-  document.querySelectorAll(".tab").forEach((t) => t.classList.remove("actief"));
-  knop.classList.add("actief");
-  staat.categorie = knop.dataset.categorie;
+  kiesTab(knop.dataset.categorie);
   laadRecepten();
 });
+
+/* Zoektermen in- en uitklappen (standaard ingeklapt) */
+$("labelsKnop").addEventListener("click", () => {
+  const open = $("labels").hidden;
+  $("labels").hidden = !open;
+  $("labelsKnop").textContent = open ? "Verberg zoektermen" : "Toon zoektermen";
+  $("labelsKnop").setAttribute("aria-expanded", String(open));
+});
+
+/* Start met favorieten; zonder favorieten terugvallen op Alles */
+async function start() {
+  try {
+    const fav = await haal("/api/recepten?categorie=favoriet");
+    if (!fav.length) kiesTab("");
+  } catch (e) {
+    kiesTab("");
+  }
+  laadRecepten();
+}
 
 /* Zoeken (met kleine vertraging) */
 let zoekTimer;
@@ -160,4 +183,4 @@ document.addEventListener("keydown", (e) => {
 
 /* Opbouwen */
 laadLabels();
-laadRecepten();
+start();

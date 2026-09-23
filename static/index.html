@@ -20,9 +20,10 @@
     </header>
 
     <div class="tabs" id="tabs">
-      <button class="tab actief" data-categorie="">Alles</button>
-      <button class="tab" data-categorie="favoriet">Favoriete recepten</button>
+      <button class="tab actief" data-categorie="favoriet">Favorieten</button>
       <button class="tab" data-categorie="uitproberen">Uitproberen</button>
+      <button class="tab" data-categorie="afgeserveerd">Afgeserveerd</button>
+      <button class="tab" data-categorie="">Alles</button>
     </div>
 
     <div class="zoekbalk">
@@ -33,7 +34,8 @@
       <input id="zoekveld" type="text" placeholder="Zoek in titel, ingrediënten…" autocomplete="off" aria-label="Zoek een recept">
     </div>
 
-    <div class="labels" id="labels" aria-label="Filter op ingrediënt"></div>
+    <button class="labels-knop" id="labelsKnop" type="button" aria-expanded="false" aria-controls="labels">Toon zoektermen</button>
+    <div class="labels" id="labels" aria-label="Filter op ingrediënt" hidden></div>
 
     <div id="rooster" class="rooster"></div>
     <p id="geenResultaat" class="geen-resultaat" hidden>Geen recept gevonden.</p>

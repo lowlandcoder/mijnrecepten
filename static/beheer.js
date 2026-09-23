@@ -3,7 +3,7 @@
 // Deze pagina is via nginx afgeschermd met de centrale aanmelding.
 
 const $ = (id) => document.getElementById(id);
-const CAT_TEKST = { favoriet: "Favoriet", uitproberen: "Uitproberen" };
+const CAT_TEKST = { favoriet: "Favoriet", uitproberen: "Uitproberen", afgeserveerd: "Afgeserveerd" };
 let huidigeCategorie = "";
 let huidigeZoek = "";
 const gekozenLabels = new Set();
