@@ -72,9 +72,16 @@ de gewone route `POST /api/beheer/recept`.
 
 ## Categorie en labels
 
-- Categorie staat als veld op het recept (`favoriet` of `uitproberen`).
-  Omzetten gebeurt via de beheerpagina of de route
+- Categorie staat als veld op het recept (`favoriet`, `uitproberen` of
+  `afgeserveerd`). Een recept heeft steeds één categorie. Afgeserveerd is
+  bedoeld voor recepten die niet meer op tafel komen en is alleen via de
+  beheerpagina in te stellen. Omzetten naar favoriet kan ook via de route
   `/api/beheer/recept/<id>/naar-favoriet`.
+- De publieke pagina toont de knoppen in de volgorde Favorieten, Uitproberen,
+  Afgeserveerd, Alles en opent op Favorieten. Zijn er geen favorieten, dan
+  opent de pagina op Alles.
+- De zoektermen (labels) zijn standaard ingeklapt. De knop "Toon zoektermen"
+  klapt ze uit.
 - Labels zijn ingrediënten. Filteren op meerdere labels toont alleen recepten
   die ze allemaal hebben.
 - De labels staan zowel op de publieke pagina als op de beheerpagina. In de
