@@ -1,0 +1,31 @@
+# robots.txt voor mijnrecepten.lab023.nl
+# De recepten zijn vrij te bekijken; alleen het beheer is afgeschermd.
+# Deze opzet laat gewone zoekmachines de recepten indexeren, houdt het beheer
+# uit zoekmachines en weert de AI-scrapers die volgens de logs actief langskomen
+# (ClaudeBot, GPTBot, PerplexityBot, CCBot, Bytespider, anthropic-ai, meta).
+#
+# Wil je de recepten juist NIET in Google terug laten komen? Gebruik dan
+# robots-blokkeer-alles.txt in plaats van dit bestand.
+
+# AI-scrapers volledig weren:
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: OAI-SearchBot
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+User-agent: PerplexityBot
+User-agent: CCBot
+User-agent: Bytespider
+User-agent: Amazonbot
+User-agent: meta-externalagent
+Disallow: /
+
+# Overige bots (zoekmachines): recepten toestaan, beheer blokkeren.
+User-agent: *
+Disallow: /beheer
+Disallow: /api/beheer/
+Allow: /
+
+# Sitemap alleen opnemen als de recepten actief vindbaar moeten zijn.
+# Verwijder de # als je een sitemap publiceert:
+# Sitemap: https://mijnrecepten.lab023.nl/sitemap.xml

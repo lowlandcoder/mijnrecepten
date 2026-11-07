@@ -28,9 +28,32 @@ from urllib.parse import urljoin, urlparse
 import requests
 
 BROWSERNAAM = (
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/125.0 Safari/537.36 MijnRecepten/1.0"
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
 )
+# Koppen zoals een gewone browser ze stuurt. Sommige sites wijzen verzoeken met
+# alleen een naam en een taal af. Er is geen garantie dat dit overal helpt.
+KOPPEN_PAGINA = {
+    "User-Agent": BROWSERNAAM,
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "nl-NL,nl;q=0.9,en;q=0.7",
+    "Accept-Encoding": "gzip, deflate",
+    "Upgrade-Insecure-Requests": "1",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-User": "?1",
+}
+KOPPEN_FOTO = {
+    "User-Agent": BROWSERNAAM,
+    "Accept": "image/webp,image/png,image/jpeg,image/*;q=0.8,*/*;q=0.5",
+    "Accept-Language": "nl-NL,nl;q=0.9,en;q=0.7",
+    "Accept-Encoding": "gzip, deflate",
+    "Sec-Fetch-Dest": "image",
+    "Sec-Fetch-Mode": "no-cors",
+    "Sec-Fetch-Site": "cross-site",
+}
+GEBLOKKEERD = {401, 403, 429}   # de site weigert automatisch ophalen
 TIJDSLIMIET = 20          # seconden per verzoek
 MAX_PAGINA = 4_000_000    # bytes html
 MAX_FOTO = 8_000_000      # bytes beeld
@@ -87,9 +110,9 @@ def controleer_adres(url):
 
 
 # --- Ophalen ---------------------------------------------------------------
-def _haal_op(url, soorten, maximum):
+def _haal_op(url, soorten, maximum, koppen=None):
     """Haalt een adres op en volgt doorverwijzingen met controle per stap."""
-    kop = {"User-Agent": BROWSERNAAM, "Accept-Language": "nl,en;q=0.8"}
+    kop = dict(koppen or KOPPEN_PAGINA)
     huidig = url
     for _ in range(MAX_SPRONGEN):
         controleer_adres(huidig)
@@ -108,8 +131,14 @@ def _haal_op(url, soorten, maximum):
             huidig = urljoin(huidig, volgende)
             continue
         if antwoord.status_code != 200:
+            code = antwoord.status_code
             antwoord.close()
-            raise SchraapFout(f"De pagina gaf foutcode {antwoord.status_code}.")
+            if code in GEBLOKKEERD:
+                raise SchraapFout(
+                    f"Deze site laat automatisch ophalen niet toe (foutcode {code}). "
+                    "Voeg het recept toe met een foto of printscreen, of vul het met de hand in."
+                )
+            raise SchraapFout(f"De pagina gaf foutcode {code}.")
         type_ = antwoord.headers.get("Content-Type", "").split(";")[0].strip().lower()
         if soorten and type_ not in soorten:
             antwoord.close()
@@ -321,7 +350,7 @@ def download_foto(foto_url, foto_dir):
     if not foto_url:
         return None
     try:
-        ruw, type_, _, _ = _haal_op(foto_url, set(FOTO_TYPES), MAX_FOTO)
+        ruw, type_, _, _ = _haal_op(foto_url, set(FOTO_TYPES), MAX_FOTO, koppen=KOPPEN_FOTO)
     except SchraapFout:
         return None
     naam = f"{uuid.uuid4().hex}{FOTO_TYPES.get(type_, '.jpg')}"

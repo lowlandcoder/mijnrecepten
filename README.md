@@ -17,7 +17,8 @@ verwijderen) is afgeschermd via de centrale aanmelding (oauth2-proxy, map
   eruit halen, foto downloaden en labels voorstellen.
 - `static/` — de pagina's: `index.html` (publiek) en `beheer.html` (beheer),
   met `style.css`, `beheer.css`, `script.js`, `beheer.js` en de gedeelde
-  `huisstijl.css`.
+  `huisstijl.css`, en `robots.txt` (recepten toegestaan voor zoekmachines,
+  beheer en scrapers van taalmodellen geweerd; bron: `robots/` in de werkmap).
 - `tools/importeer_blog.py` — recepten van de blogspot-blog importeren.
 - `Dockerfile`, `requirements.txt`, `docker-compose.yml` — om de container te
   bouwen en te draaien.
@@ -52,7 +53,11 @@ Hoe het ophalen werkt:
    adressen in het eigen netwerk worden geweigerd. Doorverwijzingen worden per
    stap opnieuw gecontroleerd, met een maximum van vijf.
 2. De pagina wordt opgehaald met een tijdslimiet van 20 seconden en een
-   maximum van 4 MB.
+   maximum van 4 MB. Het verzoek stuurt de koppen van een gewone browser
+   (`KOPPEN_PAGINA` voor de pagina, `KOPPEN_FOTO` voor de foto). Sommige sites,
+   zoals ah.nl, weigeren dat toch met foutcode 403. Bij 401, 403 en 429 volgt
+   een melding dat de site automatisch ophalen niet toelaat, met het advies
+   een foto of printscreen te gebruiken.
 3. De inhoud wordt gelezen met `recipe-scrapers`, dat honderden receptensites
    kent. Kent de bibliotheek de site niet, dan volgt een terugval op de
    schema.org-gegevens in de pagina zelf. De meeste Nederlandse receptensites
