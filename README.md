@@ -33,7 +33,7 @@ pagina kan worden gefilterd op categorie en op een of meer ingrediënt-labels,
 en worden gezocht in de tekst.
 
 Bij "Uitproberen" kan snel een foto of printscreen van een recept worden
-toegevoegd. De tekst op die foto wordt met Tesseract (Nederlands) herkend en
+toegevoegd. De tekst op die foto wordt met Tesseract (Nederlands en Engels naast elkaar) herkend en
 opgeslagen, zodat het recept doorzoekbaar en filterbaar wordt. Bevalt het, dan
 zet één knop het recept om naar "Favoriete recepten".
 
@@ -152,7 +152,7 @@ In `docker-compose.yml` onder `environment`:
 
 | Instelling | Betekenis | Waarde |
 | --- | --- | --- |
-| `OCR_TAAL` | taal voor de tekstherkenning | `nld` |
+| `OCR_TAAL` | talen voor de tekstherkenning, gekoppeld met `+` | `nld+eng` |
 | `POORT` | poort binnen de container | `8000` |
 
 ## Geheimen

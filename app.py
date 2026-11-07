@@ -10,7 +10,7 @@ Deze backend doet drie dingen:
      afgeschermd met de centrale aanmelding (oauth2-proxy, map mijnlogin).
 
 Bij "Uitproberen" kan een foto of printscreen worden toegevoegd. De tekst op
-die foto wordt met Tesseract (Nederlands) herkend en opgeslagen, zodat het
+die foto wordt met Tesseract (Nederlands en Engels) herkend en opgeslagen, zodat het
 recept doorzoekbaar en filterbaar wordt.
 
 Een recept kan ook via een webadres binnenkomen. De route
@@ -21,7 +21,7 @@ controle en pas na akkoord opgeslagen.
 Instellingen komen uit omgevingsvariabelen (in te vullen in docker-compose):
   DATA_DIR   map voor database en foto's        (standaard /app/data)
   POORT      poort waarop de pagina draait       (standaard 8000)
-  OCR_TAAL   taal voor Tesseract                 (standaard nld)
+  OCR_TAAL   talen voor Tesseract, met + gekoppeld (standaard nld+eng)
 """
 
 import os
@@ -52,7 +52,7 @@ DATA_DIR = os.environ.get("DATA_DIR", "/app/data")
 FOTO_DIR = os.path.join(DATA_DIR, "fotos")
 DB_PATH = os.path.join(DATA_DIR, "recepten.db")
 POORT = int(os.environ.get("POORT", "8000"))
-OCR_TAAL = os.environ.get("OCR_TAAL", "nld")
+OCR_TAAL = os.environ.get("OCR_TAAL", "nld+eng")
 
 TOEGESTANE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 CATEGORIEEN = {"favoriet", "uitproberen", "afgeserveerd"}

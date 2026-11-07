@@ -1,12 +1,13 @@
 # Container voor de MijnRecepten-backend.
-# Bevat Tesseract met het Nederlandse taalpakket voor de tekstherkenning (OCR).
+# Bevat Tesseract met het Nederlandse en Engelse taalpakket voor de tekstherkenning (OCR).
 FROM python:3.12-slim
 
-# Tesseract en het Nederlandse taalpakket installeren.
+# Tesseract en de taalpakketten Nederlands en Engels installeren.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         tesseract-ocr \
         tesseract-ocr-nld \
+        tesseract-ocr-eng \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

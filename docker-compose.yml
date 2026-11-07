@@ -8,7 +8,7 @@ services:
     container_name: mijnrecepten
     restart: unless-stopped
     environment:
-      OCR_TAAL: "nld"        # taal voor de tekstherkenning (Tesseract)
+      OCR_TAAL: "nld+eng"    # talen voor de tekstherkenning (Tesseract), naast elkaar
       POORT: "8000"
     ports:
       # Alleen op localhost; nginx schakelt door naar deze poort.
